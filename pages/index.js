@@ -103,7 +103,7 @@ export default function Home() {
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">Heróis ({favoriteUsers.length})</h2>
             <ul>
-              {favoriteUsers.map((user) => (
+              {favoriteUsers.slice(0, 6).map((user) => (
                 <li key={`key__${user}`}>
                   <a href={`/users/${user}`}>
                     <img src={`https://github.com/${user}.png`} alt={user} />
@@ -116,7 +116,7 @@ export default function Home() {
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">Heróis ({comunidades.length})</h2>
             <ul>
-              {comunidades.map((community) => (
+              {comunidades.slice(0, 6).map((community) => (
                 <li key={community.id}>
                   <a href="http://placehold.it/300x300">
                     <img src={community.image} alt={community.title} />
