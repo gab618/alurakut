@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MainGrid } from "../src/components/MainGrid";
 import { Box } from "../src/components/Box";
@@ -30,6 +30,26 @@ function ProfileSidebar({ githubUser }) {
   );
 }
 
+function ProfileRelationsBox({ title, items }) {
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {title} ({items.length})
+      </h2>
+      <ul>
+        {items.slice(0, 6).map((item) => (
+          <li key={`key__${item}`}>
+            <a href={`/users/${item}`}>
+              <img src={`https://github.com/${item}.png`} alt={item} />
+              <span>{item}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </ProfileRelationsBoxWrapper>
+  );
+}
+
 export default function Home() {
   const [comunidades, setComunidades] = useState([
     {
@@ -39,6 +59,16 @@ export default function Home() {
         "https://cdn.pixabay.com/photo/2020/11/28/11/25/cookie-5784367_960_720.png",
     },
   ]);
+  const [githubFollowers, setGithubFollowers] = useState([]);
+
+  // useEffect(() => {
+  //   fetch("https://api.github.com/users/gab618/followers").then(
+  //     async (response) => {
+  //       const data = await response.json();
+  //       setGithubFollowers(data);
+  //     }
+  //   );
+  // }, []);
 
   function handleCreateCommunity(e) {
     e.preventDefault();
@@ -100,32 +130,8 @@ export default function Home() {
           </Box>
         </div>
         <div style={{ gridArea: "profileRelationsArea" }}>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">Heróis ({favoriteUsers.length})</h2>
-            <ul>
-              {favoriteUsers.slice(0, 6).map((user) => (
-                <li key={`key__${user}`}>
-                  <a href={`/users/${user}`}>
-                    <img src={`https://github.com/${user}.png`} alt={user} />
-                    <span>{user}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </ProfileRelationsBoxWrapper>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">Heróis ({comunidades.length})</h2>
-            <ul>
-              {comunidades.slice(0, 6).map((community) => (
-                <li key={community.id}>
-                  <a href="http://placehold.it/300x300">
-                    <img src={community.image} alt={community.title} />
-                    <span>{community.title}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </ProfileRelationsBoxWrapper>
+          {/* <ProfileRelationsBox items={githubFollowers} title="Seguidores" /> */}
+          <ProfileRelationsBox items={favoriteUsers} title="Heróis" />
         </div>
       </MainGrid>
     </>
