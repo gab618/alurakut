@@ -36,7 +36,7 @@ function ProfileRelationsBox({ title, items }) {
       <h2 className="smallTitle">
         {title} ({items.length})
       </h2>
-      <ul>
+      {/* <ul>
         {items.slice(0, 6).map((item) => (
           <li key={`key__${item}`}>
             <a href={`/users/${item}`}>
@@ -45,7 +45,7 @@ function ProfileRelationsBox({ title, items }) {
             </a>
           </li>
         ))}
-      </ul>
+      </ul> */}
     </ProfileRelationsBoxWrapper>
   );
 }
@@ -61,14 +61,14 @@ export default function Home() {
   ]);
   const [githubFollowers, setGithubFollowers] = useState([]);
 
-  // useEffect(() => {
-  //   fetch("https://api.github.com/users/gab618/followers").then(
-  //     async (response) => {
-  //       const data = await response.json();
-  //       setGithubFollowers(data);
-  //     }
-  //   );
-  // }, []);
+  useEffect(() => {
+    fetch("https://api.github.com/users/gab618/followers").then(
+      async (response) => {
+        const data = await response.json();
+        setGithubFollowers(data);
+      }
+    );
+  }, []);
 
   function handleCreateCommunity(e) {
     e.preventDefault();
@@ -130,8 +130,9 @@ export default function Home() {
           </Box>
         </div>
         <div style={{ gridArea: "profileRelationsArea" }}>
-          {/* <ProfileRelationsBox items={githubFollowers} title="Seguidores" /> */}
+          <ProfileRelationsBox items={githubFollowers} title="Seguidores" />
           <ProfileRelationsBox items={favoriteUsers} title="Heróis" />
+          <ProfileRelationsBox items={comunidades} title="Comunidades" />
         </div>
       </MainGrid>
     </>
