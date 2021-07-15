@@ -7,9 +7,7 @@ export default async function recebedorDeRequests(req, res) {
 
     const record = await client.items.create({
       itemType: "968746",
-      title: "Teste",
-      imageUrl: "https://github.com/gab618.png",
-      creatorSlug: "gab618",
+      ...req.body,
     });
 
     return res.json({

@@ -62,6 +62,30 @@ export default function Home() {
   const [githubFollowers, setGithubFollowers] = useState([]);
 
   useEffect(() => {
+    fetch("https://graphql.datocms.com/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `8b89fdae5a8692eee76d0a45d3f35c`,
+      },
+      body: JSON.stringify({
+        query: `
+        query {
+          allCommunities {
+            title
+            id
+            imageUrl
+            creatorSlug
+          }
+        }
+        `,
+      }),
+    }).then(async (response) => {
+      const { data } = await response.json();
+      setComunidades(data.allCommunities);
+    });
+
     fetch("https://api.github.com/users/gab618/followers").then(
       async (response) => {
         const data = await response.json();
@@ -75,12 +99,22 @@ export default function Home() {
     const formData = new FormData(e.target);
 
     const comunidade = {
-      id: new Date().toISOString(),
       title: formData.get("title"),
-      image: formData.get("image"),
+      imageUrl: formData.get("image"),
+      creatorSlug: githubUser,
     };
 
-    setComunidades([...comunidades, comunidade]);
+    fetch("api/comunidades", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(comunidade),
+    }).then(async (response) => {
+      const data = await response.json();
+      const comunidade = data.record;
+      setComunidades([...comunidades, comunidade]);
+    });
   }
 
   const githubUser = "gab618";
