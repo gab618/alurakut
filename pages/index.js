@@ -36,16 +36,16 @@ function ProfileRelationsBox({ title, items }) {
       <h2 className="smallTitle">
         {title} ({items.length})
       </h2>
-      {/* <ul>
+      <ul>
         {items.slice(0, 6).map((item) => (
-          <li key={`key__${item}`}>
-            <a href={`/users/${item}`}>
-              <img src={`https://github.com/${item}.png`} alt={item} />
-              <span>{item}</span>
+          <li key={`key__${item.login}`}>
+            <a href={item.html_url}>
+              <img src={item.avatar_url} alt={item.login} />
+              <span>{item.login}</span>
             </a>
           </li>
         ))}
-      </ul> */}
+      </ul>
     </ProfileRelationsBoxWrapper>
   );
 }
@@ -89,7 +89,7 @@ export default function Home() {
     fetch("https://api.github.com/users/gab618/followers").then(
       async (response) => {
         const data = await response.json();
-        setGithubFollowers(data);
+        setGithubFollowers(data.sort(() => 0.5 - Math.random()));
       }
     );
   }, []);
@@ -119,11 +119,31 @@ export default function Home() {
 
   const githubUser = "gab618";
   const favoriteUsers = [
-    "juunegreiros",
-    "peas",
-    "omariosouto",
-    "danielhe4rt",
-    "marcobrunodev",
+    {
+      login: "juunegreiros",
+      avatar_url: "https://github.com/juunegreiros.png",
+      html_url: "https://github.com/juunegreiros",
+    },
+    {
+      login: "peas",
+      avatar_url: "https://github.com/peas.png",
+      html_url: "https://github.com/peas",
+    },
+    {
+      login: "omariosouto",
+      avatar_url: "https://github.com/omariosouto.png",
+      html_url: "https://github.com/omariosouto",
+    },
+    {
+      login: "danielhe4rt",
+      avatar_url: "https://github.com/danielhe4rt.png",
+      html_url: "https://github.com/danielhe4rt",
+    },
+    {
+      login: "marcobrunodev",
+      avatar_url: "https://github.com/marcobrunodev.png",
+      html_url: "https://github.com/marcobrunodev",
+    },
   ];
 
   return (
@@ -165,8 +185,22 @@ export default function Home() {
         </div>
         <div style={{ gridArea: "profileRelationsArea" }}>
           <ProfileRelationsBox items={githubFollowers} title="Seguidores" />
+
+          <ProfileRelationsBoxWrapper>
+            <h2 className="smallTitle">Comunidades ({comunidades.length})</h2>
+            <ul>
+              {comunidades.slice(0, 6).map((item) => (
+                <li key={`key__${item.id}`}>
+                  <a href={`/communities/${item.id}`}>
+                    <img src={item.imageUrl} alt={item.title} />
+                    <span>{item.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </ProfileRelationsBoxWrapper>
+
           <ProfileRelationsBox items={favoriteUsers} title="Heróis" />
-          <ProfileRelationsBox items={comunidades} title="Comunidades" />
         </div>
       </MainGrid>
     </>
