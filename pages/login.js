@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import nookies from "nookies";
 
 export default function LoginPage() {
   const [githubUser, setGithubUser] = useState("");
@@ -8,7 +9,20 @@ export default function LoginPage() {
   function handleLogin(e) {
     e.preventDefault();
     console.log(githubUser);
-    router.push("/");
+    fetch("https://alurakut.vercel.app/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ githubUser }),
+    }).then(async (res) => {
+      const { token } = await res.json();
+      nookies.set(null, "USER_TOKEN", token, {
+        path: "/",
+        maxAge: 86400 * 7,
+      });
+      router.push("/");
+    });
   }
 
   return (
@@ -48,7 +62,6 @@ export default function LoginPage() {
               value={githubUser}
               onChange={(e) => {
                 setGithubUser(e.target.value);
-                console.log(githubUser);
               }}
             />
             <button type="submit">Login</button>
