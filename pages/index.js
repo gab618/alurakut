@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import nookies from "nookies";
+import jwt from "jsonwebtoken";
 
 import { MainGrid } from "../src/components/MainGrid";
 import { Box } from "../src/components/Box";
@@ -50,15 +52,37 @@ function ProfileRelationsBox({ title, items }) {
   );
 }
 
-export default function Home() {
-  const [comunidades, setComunidades] = useState([
+export default function Home({ githubUser }) {
+  const [comunidades, setComunidades] = useState([]);
+
+  const favoriteUsers = [
     {
-      id: "123",
-      title: "Eu como biscoito",
-      image:
-        "https://cdn.pixabay.com/photo/2020/11/28/11/25/cookie-5784367_960_720.png",
+      login: "juunegreiros",
+      avatar_url: "https://github.com/juunegreiros.png",
+      html_url: "https://github.com/juunegreiros",
     },
-  ]);
+    {
+      login: "peas",
+      avatar_url: "https://github.com/peas.png",
+      html_url: "https://github.com/peas",
+    },
+    {
+      login: "omariosouto",
+      avatar_url: "https://github.com/omariosouto.png",
+      html_url: "https://github.com/omariosouto",
+    },
+    {
+      login: "danielhe4rt",
+      avatar_url: "https://github.com/danielhe4rt.png",
+      html_url: "https://github.com/danielhe4rt",
+    },
+    {
+      login: "marcobrunodev",
+      avatar_url: "https://github.com/marcobrunodev.png",
+      html_url: "https://github.com/marcobrunodev",
+    },
+  ];
+
   const [githubFollowers, setGithubFollowers] = useState([]);
 
   useEffect(() => {
@@ -116,35 +140,6 @@ export default function Home() {
       setComunidades([...comunidades, comunidade]);
     });
   }
-
-  const githubUser = "gab618";
-  const favoriteUsers = [
-    {
-      login: "juunegreiros",
-      avatar_url: "https://github.com/juunegreiros.png",
-      html_url: "https://github.com/juunegreiros",
-    },
-    {
-      login: "peas",
-      avatar_url: "https://github.com/peas.png",
-      html_url: "https://github.com/peas",
-    },
-    {
-      login: "omariosouto",
-      avatar_url: "https://github.com/omariosouto.png",
-      html_url: "https://github.com/omariosouto",
-    },
-    {
-      login: "danielhe4rt",
-      avatar_url: "https://github.com/danielhe4rt.png",
-      html_url: "https://github.com/danielhe4rt",
-    },
-    {
-      login: "marcobrunodev",
-      avatar_url: "https://github.com/marcobrunodev.png",
-      html_url: "https://github.com/marcobrunodev",
-    },
-  ];
 
   return (
     <>
@@ -205,4 +200,35 @@ export default function Home() {
       </MainGrid>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const token = nookies.get(context).USER_TOKEN;
+  const { githubUser } = jwt.decode(token);
+
+  const { isAuthenticated } = await fetch(
+    "https://alurakut.vercel.app/api/auth",
+    {
+      headers: {
+        Authorization: token,
+      },
+    }
+  ).then((res) => res.json());
+
+  console.log(isAuthenticated);
+
+  if (!isAuthenticated) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      githubUser,
+    },
+  };
 }
