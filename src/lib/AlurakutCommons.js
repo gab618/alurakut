@@ -1,6 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
+import nookies from "nookies";
 
 const BASE_URL = "http://alurakut.vercel.app/";
 const v = "1";
@@ -18,6 +20,12 @@ function Link({ href, children, ...props }) {
 // ================================================================================================================
 export function AlurakutMenu({ githubUser }) {
   const [isMenuOpen, setMenuState] = React.useState(false);
+  const router = useRouter();
+
+  function handleLogout() {
+    nookies.destroy(null, "USER_TOKEN");
+    router.push("/login");
+  }
   return (
     <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
       <div className="container">
@@ -39,7 +47,7 @@ export function AlurakutMenu({ githubUser }) {
         </nav>
 
         <nav>
-          <a href={`/logout`}>Sair</a>
+          <a onClick={handleLogout}>Sair</a>
           <div>
             <input placeholder="Pesquisar no Orkut" />
           </div>
